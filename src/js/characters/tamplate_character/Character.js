@@ -32,13 +32,12 @@ export class Character {
   }
 
   levelUp() {
-
     if (this.health <= 0) {
       throw new Error('нельзя повысить level умершего');
     }
     this.level += 1;
-    this.attack *= 1.2 ;
-    this.defence *= 1.2 ;
+    this.attack *= 1.2;
+    this.defence *= 1.2;
     this.health = 100;
   }
 
