@@ -1,40 +1,86 @@
+import { Bowerman } from '../../Bowerman';
 import { Character } from '../Character';
 
-const expected = {
-  name: 'Robin',
+const bowmanTwoLewel = {
+  name: 'Robin Hood',
   type: 'Bowman',
   health: 100,
-  level: 1,
-  attack: 0,
-  defence: 0,
+  level: 2,
+  attack: 30,
+  defence: 30,
 };
 
-test('correct creating character', () => {
-  const received = new Character('Robin', 'Bowman');
+test('level up for bowman', () => {
+  const levelUpForBowman = new Bowerman('Robin Hood', 'Bowman');
+  levelUpForBowman.levelUp();
 
-  expect(received).toEqual(expected);
-});
+  expect(levelUpForBowman).toEqual(bowmanTwoLewel);
+})
 
-test('the name less than 2 characters and throw Error', () => {
-  expect(() => new Character('R', 'Bowman')).toThrowError(new Error('имя персонажа должно быть не меньше 2 и не больше 1 символов'));
-});
+test('level up for bowman with health 0', () => {
+  const levelUpForBowman = new Bowerman('Robin Hood', 'Bowman');
+  levelUpForBowman.health = 0;
 
-test('the name length equal 2 characters and not throw Error', () => {
-  expect(() => new Character('Ro', 'Bowman')).not.toThrowError(new Error('имя персонажа должно быть не меньше 2 и не больше 1 символов'));
-});
+  expect(() => levelUpForBowman.levelUp()).toThrowError(new Error('нельзя повысить level умершего'));
+})
 
-test('the name more than 10 characters and throw Error', () => {
-  expect(() => new Character('Legendary Robin Hood', 'Bowman')).toThrowError(new Error('имя персонажа должно быть не меньше 2 и не больше 1 символов'));
-});
+test('level up for bowman with health subzero', () => {
+  const levelUpForBowman = new Bowerman('Robin Hood', 'Bowman');
+  levelUpForBowman.health = -1;
 
-test('the name length equal 10 characters and not throw Error', () => {
-  expect(() => new Character('Robin Hood', 'Bowman')).not.toThrowError(new Error('имя персонажа должно быть не меньше 2 и не больше 1 символов'));
-});
+  expect(() => levelUpForBowman.levelUp()).toThrowError(new Error('нельзя повысить level умершего'));
+})
 
-test('correct type passed and not throw Error', () => {
-  expect(() => new Character('Robin', 'Bowman')).not.toThrowError(new Error('имя персонажа должно быть не меньше 2 и не больше 1 символов'));
-});
+test('bowman attacked', () => {
+  const bowmanDamage = {
+    name: 'Robin Hood',
+    type: 'Bowman',
+    health: 100,
+    level: 1,
+    attack: 25,
+    defence: 25,
+  };
 
-test('incorrect type passed and throw Error', () => {
-  expect(() => new Character('Robin', 'Bowma')).toThrowError(new Error('неверно указан тип персонажа'));
-});
+  bowmanDamage.health -= 10 * (1 - bowmanDamage.defence / 100)
+
+  const bowman = new Bowerman('Robin Hood', 'Bowman');
+  bowman.damage(10);
+
+  expect(bowman).toEqual(bowmanDamage);
+})
+
+test('bowman attacked when health 0', () => {
+  const bowmanDamage = {
+    name: 'Robin Hood',
+    type: 'Bowman',
+    health: 0,
+    level: 1,
+    attack: 25,
+    defence: 25,
+  };
+
+  bowmanDamage.health -= 10 * (1 - bowmanDamage.defence / 100)
+
+  const bowman = new Bowerman('Robin Hood', 'Bowman');
+  bowman.health = 0;
+  bowman.damage(10);
+
+  expect(bowman).toEqual(bowmanDamage);
+})
+
+test('bowman attacked with health subzero', () => {
+  const bowmanDamage = {
+    name: 'Robin Hood',
+    type: 'Bowman',
+    health: -10,
+    level: 1,
+    attack: 25,
+    defence: 25,
+  };
+
+  const bowman = new Bowerman('Robin Hood', 'Bowman');
+  bowman.health = -10;
+  bowman.damage(10);
+
+  expect(bowman).toEqual(bowmanDamage);
+})
